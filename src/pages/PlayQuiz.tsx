@@ -124,27 +124,27 @@ const PlayQuiz = () => {
         )}
 
         {session.status === 'active' && !session.show_leaderboard && currentQuestion && (
-          <Card className="p-8 bg-card border-border rounded-3xl">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="text-lg font-semibold text-muted-foreground">Question</h3>
+          <Card className="p-6 bg-card border-border rounded-3xl">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-base font-semibold text-muted-foreground">Question</h3>
               <div className="flex items-center gap-2 text-primary">
-                <Clock className="h-5 w-5" />
-                <span className="text-2xl font-bold">{timeLeft}s</span>
+                <Clock className="h-4 w-4" />
+                <span className="text-xl font-bold">{timeLeft}s</span>
               </div>
             </div>
 
-            <div className="mb-8">
-              <p className="text-2xl font-bold mb-6">{currentQuestion.question_text}</p>
+            <div className="mb-6">
+              <p className="text-xl font-bold mb-4">{currentQuestion.question_text}</p>
               {currentQuestion.question_image_url && (
                 <img 
                   src={currentQuestion.question_image_url} 
                   alt="Question" 
-                  className="w-full max-h-64 object-contain rounded-2xl"
+                  className="w-full max-h-48 object-contain rounded-2xl"
                 />
               )}
             </div>
 
-            <div className="space-y-4 mb-6">
+            <div className="space-y-3 mb-5">
               {['A', 'B', 'C', 'D'].map(option => {
                 const optionText = currentQuestion[`option_${option.toLowerCase()}`];
                 if (!optionText) return null;
@@ -156,7 +156,7 @@ const PlayQuiz = () => {
                   <div
                     key={option}
                     onClick={() => handleOptionSelect(option)}
-                    className={`relative p-6 rounded-2xl border-2 transition-all cursor-pointer ${
+                    className={`relative p-4 rounded-xl border-2 transition-all cursor-pointer ${
                       hasAnswered 
                         ? 'cursor-default' 
                         : 'hover:border-primary/50'
@@ -170,22 +170,22 @@ const PlayQuiz = () => {
                         : ''
                     }`}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold ${
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base font-bold ${
                         isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
                       }`}>
                         {option}
                       </div>
-                      <span className="text-lg font-medium flex-1">{optionText}</span>
+                      <span className="text-base font-medium flex-1">{optionText}</span>
                       {hasAnswered && (
                         <div className="text-right">
-                          <div className="text-sm text-muted-foreground">{answerStats[option]} votes</div>
-                          <div className="text-lg font-bold text-primary">{percentage}%</div>
+                          <div className="text-xs text-muted-foreground">{answerStats[option]} votes</div>
+                          <div className="text-base font-bold text-primary">{percentage}%</div>
                         </div>
                       )}
                     </div>
                     {hasAnswered && (
-                      <div className="mt-4 h-2 bg-muted rounded-full overflow-hidden">
+                      <div className="mt-3 h-1.5 bg-muted rounded-full overflow-hidden">
                         <div 
                           className="h-full bg-primary transition-all duration-500"
                           style={{ width: `${percentage}%` }}
@@ -203,13 +203,13 @@ const PlayQuiz = () => {
                   onClick={submitAnswer}
                   disabled={!selectedAnswer || timeLeft === 0}
                   size="lg"
-                  className="w-64 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full text-lg"
+                  className="w-56 bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
                 >
                   Submit Answer
                 </Button>
               </div>
             ) : (
-              <p className="text-center text-lg font-semibold text-primary">
+              <p className="text-center text-base font-semibold text-primary">
                 Answer submitted! Wait for the next question...
               </p>
             )}
