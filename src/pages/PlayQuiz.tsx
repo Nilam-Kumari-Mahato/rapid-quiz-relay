@@ -57,6 +57,8 @@ const PlayQuiz = () => {
     if (timeLeft > 0 && session?.status === 'active' && !hasAnswered) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
+    } else if (timeLeft === 0 && !hasAnswered) {
+      setHasAnswered(true);
     }
   }, [timeLeft, session?.status, hasAnswered]);
 
