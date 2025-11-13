@@ -215,13 +215,13 @@ export const getPlayerSessionData = query({
     // For players, hide the score gained from the current question until reveal
     const visibleParticipants = allParticipants.map((p) => {
       const extra = currentQuestion ? (currentQuestionScores[p._id] || 0) : 0;
-      const visibleScore = session.reveal_answer ? p.score : p.score - extra;
+      const visibleScore = session.reveal_answer ? p.score : Math.max(0, p.score - extra);
       return { ...p, score: visibleScore };
     });
 
     const visibleParticipant = (() => {
       const extra = currentQuestion ? (currentQuestionScores[participant._id] || 0) : 0;
-      const visibleScore = session.reveal_answer ? participant.score : participant.score - extra;
+      const visibleScore = session.reveal_answer ? participant.score : Math.max(0, participant.score - extra);
       return { ...participant, score: visibleScore };
     })();
 

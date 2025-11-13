@@ -42,12 +42,13 @@ const PlayQuiz = () => {
 
   // Timer logic
   useEffect(() => {
-    if (session?.status === 'active' && !session.show_leaderboard && currentQuestion) {
-      // Start a new timer when the question changes
+    const questionId = currentQuestion?._id;
+    // Start a new timer only when the question id changes (prevents resets on unrelated updates)
+    if (session?.status === 'active' && !session.show_leaderboard && questionId) {
       setTimeLeft(currentQuestion.time_limit);
       setSelectedAnswer(null); // Clear previous selection
     }
-  }, [currentQuestion, session?.status, session?.show_leaderboard]);
+  }, [currentQuestion?._id, session?.status, session?.show_leaderboard]);
 
   useEffect(() => {
     if (timeLeft > 0 && session?.status === 'active' && !session.show_leaderboard && !hasAnswered) {
@@ -58,7 +59,7 @@ const PlayQuiz = () => {
       // For this app, we'll just prevent further answers
       toast({ title: "Time's up!", description: "Waiting for next question."});
     }
-  }, [timeLeft, session?.status, hasAnswered, currentQuestion]);
+  }, [timeLeft, session?.status, hasAnswered, currentQuestion?._id]);
 
   const handleOptionSelect = (option: string) => {
     if (hasAnswered || timeLeft === 0) return;

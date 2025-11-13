@@ -48,14 +48,15 @@ const HostQuiz = () => {
 
   // Timer logic
   useEffect(() => {
-    if (session?.status === 'active' && !session.show_leaderboard && currentQuestion) {
-      // Start a new timer when the question changes
+    const questionId = currentQuestion?._id;
+    // Initialize timer only when the question id actually changes (avoid resets on unrelated session updates)
+    if (session?.status === 'active' && !session.show_leaderboard && questionId) {
       setTimeLeft(currentQuestion.time_limit);
       setTimerStarted(true);
-    }else{
+    } else {
       setTimerStarted(false);
     }
-  }, [currentQuestion, session?.status, session?.show_leaderboard]);
+  }, [currentQuestion?._id, session?.status, session?.show_leaderboard]);
 
   useEffect(() => {
     if (timeLeft > 0 && session?.status === 'active' && !session.show_leaderboard) {
@@ -66,7 +67,7 @@ const HostQuiz = () => {
       toast({ title: "Time's up!", description: "Players can no longer answer. Click 'Show Leaderboard' or 'Next'."});
       setTimerStarted(false); // Prevent toast from firing repeatedly
     }
-  }, [timeLeft, session?.status, currentQuestion, session?.show_leaderboard, timerStarted, toast]); // Added toast
+  }, [timeLeft, session?.status, currentQuestion?._id, session?.show_leaderboard, timerStarted, toast]); // Added toast
 
   // reveal state is controlled by the session (server). No local reset needed here.
   const showLeaderboardMutation = useMutation(api.gameplay.showLeaderboard);
