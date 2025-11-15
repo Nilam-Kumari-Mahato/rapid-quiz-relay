@@ -1,22 +1,26 @@
-import { convexAuth, getAuthUserId } from "@convex-dev/auth/server";
-import { Password } from "@convex-dev/auth/providers/Password";
-import { Anonymous } from "@convex-dev/auth/providers/Anonymous";
+// convex/auth.ts
+import { convexAuth } from "@convex-dev/auth/server";
+import Google from "@auth/core/providers/google"; 
 import { query } from "./_generated/server";
+import { getAuthUserId } from "@convex-dev/auth/server";
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
-  providers: [Password, Anonymous],
+  providers: [
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+  ],
 });
 
+// This query fetches the user document for the currently logged-in user.
 export const loggedInUser = query({
   handler: async (ctx) => {
     const userId = await getAuthUserId(ctx);
     if (!userId) {
       return null;
     }
-    const user = await ctx.db.get(userId);
-    if (!user) {
-      return null;
-    }
-    return user;
+    // 'users' is the table name @convex-dev/auth uses by default.
+    return await ctx.db.get(userId);
   },
 });

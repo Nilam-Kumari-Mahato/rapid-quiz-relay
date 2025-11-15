@@ -19,7 +19,10 @@ export const createSession = mutation({
   handler: async (ctx, args) => {
     // Get the currently authenticated user's ID (or anonymous ID)
     const userId = await getAuthUserId(ctx);
-    const hostId = userId ?? "anonymous"; // Default to "anonymous" if null
+    if (!userId) {
+      throw new Error("You must be logged in to host a quiz.");
+}
+const hostId = userId;
 
     // Fetch the quiz
     const quiz = await ctx.db.get(args.quizId);
@@ -95,13 +98,12 @@ export const getHostSessionData = query({
     const session = await ctx.db.get(args.sessionId);
     if (!session) return null;
 
-    const userId = await getAuthUserId(ctx);
-    const hostId = userId ?? "anonymous";
+   const userId = await getAuthUserId(ctx);
 
-    // Security: Only host can view (or anyone if host was anonymous)
-    if (session.hostId !== "anonymous" && session.hostId !== hostId) {
-       return null; 
-    }
+// Security: Only the host can view.
+    if (session.hostId !== userId) {
+    return null; 
+}
 
     const quiz = await ctx.db.get(session.quizId);
     if (!quiz) return null;

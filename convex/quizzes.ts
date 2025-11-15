@@ -25,8 +25,10 @@ export const createQuiz = mutation({
   handler: async (ctx, args) => {
     const userId = await getAuthUserId(ctx);
     
-    // Use the user's ID or "anonymous" if they are not logged in
-    const creatorId = userId ?? "anonymous";
+    if (!userId) {
+      throw new Error("You must be logged in to create a quiz.");
+    }
+    const creatorId = userId;
 
     const quizId = await ctx.db.insert("quizzes", {
       title: args.title,
