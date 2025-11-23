@@ -152,13 +152,13 @@ const HostQuiz = () => {
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/5 p-2 ">
+    <div className="min-h-screen bg-gradient-to-b from-white/40 via-white/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 p-2 ">
       <div className="container max-w-6xl mx-auto mt-20">
-        <Card className="p-10 mb-6">
+        <Card className="p-2 mb-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold mb-2 text-white/80">{quiz?.title}</h1>
-              <p className="text-muted-foreground">Join Code: <span className="text-2xl font-bold text-primary">{session?.join_code}</span></p>
+              <h1 className="text-3xl font-bold mb-2 dark:text-white/80">{quiz?.title}</h1>
+              <p className="text-muted-foreground">Join Code: <span className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-primary">{session?.join_code}</span></p>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -178,9 +178,9 @@ const HostQuiz = () => {
                 onClick={startQuiz}
                 disabled={(participants?.length || 0) === 0}
                 size="lg"
-                className=" rounded-xl bg-gradient-to-r from-primary to-secondary"
+                className=" rounded-full bg-gradient-to-r from-primary to-secondary"
               >
-                <Play className="mr-2 h-5 w-5" />
+                <Play className="mr-1 h-5 w-5" />
                 Start Quiz
               </Button>
             </div>
@@ -188,18 +188,18 @@ const HostQuiz = () => {
 
           {session?.status === 'active' && !session?.show_leaderboard && currentQuestion && (
             <div className="space-y-4">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center mt-2">
                 <h2 className="text-xl font-bold">
                   Question {session.current_question_index + 1} of {questions?.length}
                 </h2>
                 <div className="flex items-center gap-2 text-warning">
                   <Clock className="h-5 w-5" />
-                  <span className="text-2xl font-bold">{timeLeft}s</span>
+                  <span className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold">{timeLeft}s</span>
                 </div>
               </div>
 
-              <div className="p-6 bg-muted rounded-lg">
-                <p className="text-2xl font-semibold mb-4">{currentQuestion.question_text}</p>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="sm:text-2xl md:text-2xl lg:text-2xl xl:text-2xl font-semibold mb-4">{currentQuestion.question_text}</p>
                 {currentQuestion.question_image_url && (
                   <img 
                     src={currentQuestion.question_image_url} 
@@ -209,7 +209,7 @@ const HostQuiz = () => {
                 )}
               </div>
 
-              <div className="flex gap-1 justify-end mb-2 ">
+              <div className="flex flex-col lg:flex-row gap-1 justify-end mb-2 ">
                 <Button
                   disabled={timeLeft > 0 || session?.reveal_answer}
                   onClick={async () => {
@@ -222,7 +222,7 @@ const HostQuiz = () => {
                   }}
                   size="sm"
                   variant={session?.reveal_answer ? undefined : "outline"}
-                  className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-lg text-gray-800 bg-primary"
+                  className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-full text-gray-800 bg-primary"
                 >
                   Reveal Answer
                 </Button>
@@ -231,7 +231,7 @@ const HostQuiz = () => {
                   onClick={handleShowLeaderboardClick} 
                   size="sm"
                   variant="ghost" 
-                  className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-lg text-gray-500"
+                  className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-full text-gray-500"
                 >
                  Show Leaderboard
                 </Button>
@@ -249,9 +249,9 @@ const HostQuiz = () => {
                   return (
                     <div
                       key={option}
-                      className={`p-4 rounded-xl bg-gradient-to-br ${colors.default} text-primary-glow flex items-center justify-start gap-4 transition-all duration-200 ${isCorrect ? 'ring-4 ring-success/50 bg-success/10 border-success scale-105' : ''}`}
+                      className={`p-2 sm:p-3 md:p-4 rounded-xl bg-gradient-to-br ${colors.default} text-primary-glow flex items-center justify-start gap-4 transition-all duration-200 ${isCorrect ? 'ring-4 ring-success/50 bg-success/10 border-success scale-105' : ''}`}
                     >
-                      <span className="w-10 h-10 rounded-full p-2 bg-muted text-muted-foreground text-xl font-bold text-center">{option}</span>
+                      <span className="w-10 h-10 rounded-full p-1 bg-muted text-muted-foreground text-xl font-bold text-center">{option}</span>
                       <span className="text-xl">{optionText}</span>
                     </div>
                   );
@@ -260,7 +260,7 @@ const HostQuiz = () => {
               <Button
                   onClick={nextQuestion} 
                   size="sm"
-                  className=" display:center px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-lg"
+                  className=" display:center px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-lg rounded-full"
                 >
                   Next
                   <SkipForward className="h-4 w-4" />
@@ -277,7 +277,7 @@ const HostQuiz = () => {
                 {participants?.map((p, i) => (
                   <div 
                     key={p._id}
-                    className={`flex justify-between items-center p-4 rounded-lg ${
+                    className={`flex justify-between items-center p-2 sm:p-3 md:p-4 rounded-lg ${
                       i === 0 ? 'bg-warning/20 border-2 border-warning' :
                       i === 1 ? 'bg-muted border-2' :
                       i === 2 ? 'bg-muted border' :
@@ -293,19 +293,20 @@ const HostQuiz = () => {
                 ))}
               </div>
 
-              <div className="flex gap-4 justify-center">
+              <div className="flex gap-2 justify-between">
                 <Button
                   onClick={skipLeaderboard}
                   size="lg"
                   variant="outline"
+                  className="p-3 sm:p-3 md:p-4 rounded-full"
                 >
-                  <SkipForward className="mr-2 h-5 w-5" />
+                  <SkipForward className="h-5 w-5" />
                   Skip
                 </Button>
                 <Button
                   onClick={nextQuestion}
                   size="lg"
-                  className="bg-gradient-to-r from-primary to-secondary"
+                  className="bg-gradient-to-r from-primary to-secondary rounded-full p-3 sm:p-3 md:p-4 font-bold"
                 >
                   Next Question
                 </Button>
