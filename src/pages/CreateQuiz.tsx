@@ -373,7 +373,7 @@ const CreateQuiz = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <Label>Question Text *</Label>
+                    <Label className="dark:text-white">Question Text *</Label>
                     <Textarea
                       value={question.question_text}
                       onChange={(e) => updateQuestion(index, 'question_text', e.target.value)}
@@ -383,7 +383,7 @@ const CreateQuiz = () => {
                   </div>
 
                   <div>
-                    <Label>Image URL (optional)</Label>
+                    <Label className="dark:text-white">Image URL (optional)</Label>
                     <div className="flex gap-2 mt-2">
                       <ImageIcon className="text-muted-foreground mt-2" />
                       <Input
@@ -400,7 +400,7 @@ const CreateQuiz = () => {
                       return (
                         <div key={optIndex} className="flex items-start gap-3">
                           <div className="w-full">
-                            <Label>{`Option ${letter}${optIndex < 2 ? ' *' : ''}`}</Label>
+                            <Label className="dark:text-white">{`Option ${letter}${optIndex < 2 ? ' *' : ''}`}</Label>
                             <Input
                               value={opt}
                               onChange={(e) => updateOption(index, optIndex, e.target.value)}
@@ -442,7 +442,7 @@ const CreateQuiz = () => {
 
                   <div className="flex gap-4">
                     <div className="flex-1">
-                      <Label>Correct Answer *</Label>
+                      <Label className="dark:text-white">Correct Answer *</Label>
                       <select
                         value={question.correct_answer}
                         onChange={(e) => updateQuestion(index, 'correct_answer', e.target.value)}
@@ -457,7 +457,7 @@ const CreateQuiz = () => {
                       </select>
                     </div>
                     <div className="flex-1">
-                      <Label>Time Limit *</Label>
+                      <Label className="dark:text-white">Time Limit *</Label>
                       <select
                         value={question.time_limit}
                         onChange={(e) => updateQuestion(index, 'time_limit', parseInt(e.target.value))}

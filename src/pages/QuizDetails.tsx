@@ -133,7 +133,7 @@ const QuizDetails = () => {
           Back to Home
         </Button>
 
-        <Card className="flex flex-col lg:flex-row justify-between items-betwwun px-4 py-3 mb-6">
+        <Card className="flex flex-col lg:flex-row justify-between items-betwwun p-5 mb-6">
           <div>
             <h1 className="text-2xl font-bold mb-2 bg-gradient-to-b from-primary to-orange-300 bg-clip-text text-transparent">
               {quiz?.title}
@@ -190,7 +190,7 @@ const QuizDetails = () => {
                 <img
                   src={question.question_image_url}
                   alt="Question"
-                  className="w-full max-h-64 object-cover rounded-lg mb-3"
+                  className="w-full max-h-64 object-contain rounded-lg mb-3"
                 />
               )}
               <div className="grid grid-cols-2 gap-2 dark:text-zinc-300">

@@ -317,7 +317,7 @@ const HostQuiz = () => {
           {session?.status === 'finished' && (
             <div className="text-center py-2 animate-in fade-in zoom-in-95 duration-700">
 
-              <DotLottieReact src="../../public/Trophy.lottie" autoplay
+              <DotLottieReact src="https://ik.imagekit.io/devsoc/Quizora/public/Trophy.lottie?updatedAt=1764162087115" autoplay
                 className="h-32 w-32 sm:h-32 sm:w-32 md:h-32 md:w-32 lg:h-40 lg:w-40 mx-auto" />
               <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold mb-8 dark:text-zinc-300">Final Leaderboard!</h2>
 

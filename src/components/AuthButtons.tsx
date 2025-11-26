@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 
 export function AuthButtons() {
   return (
-    <div style={{ position: "fixed", top: "1rem", right: "6rem", zIndex: 100 }}>
+    <div className="fixed top-5 right-24 z-50">
       <SignedOut>
         <SignInButton mode="modal">
           <Button>Sign In</Button>

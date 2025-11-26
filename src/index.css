@@ -118,7 +118,7 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
 
-    background-image: url('/public/bgimage_.png');
+    background-image: url('https://ik.imagekit.io/devsoc/Quizora/public/bgimage_.png?updatedAt=1764162098593');
 
     background-size: cover;
 
