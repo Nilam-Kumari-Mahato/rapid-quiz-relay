@@ -15,7 +15,7 @@ const Index = () => {
 
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-16 mt-5 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <h1 className="text-6xl md:text-7xl font-black mb-4 bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-serif">
+          <h1 className="text-6xl md:text-7xl font-black mb-4 bg-gradient-to-b from-primary to-secondary bg-clip-text text-transparent font-serif">
             Quizora
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground">

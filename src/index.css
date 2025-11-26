@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 7%;
 
-    --primary: 45 100% 85%;
+    --primary: 32 79% 67%;
     --primary-foreground: 0 0% 7%;
     --primary-glow: 45 100% 90%;
 
@@ -73,7 +73,7 @@ All colors MUST be HSL.
     --popover: 0 0% 12%;
     --popover-foreground: 45 100% 51%;
 
-    --primary: 45 100% 51%;
+    --primary: 32 79% 67%;
     --primary-foreground: 0 0% 7%;
     --primary-glow: 45 100% 60%;
 
@@ -127,7 +127,7 @@ All colors MUST be HSL.
     background-attachment: fixed;
 
     background-position: bottom;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial;
 
   }
 

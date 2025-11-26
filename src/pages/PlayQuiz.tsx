@@ -159,23 +159,23 @@ const PlayQuiz = () => {
   const lastTimeText = (sessionData as any)?.lastTimeTaken ? `${(sessionData as any).lastTimeTaken.toFixed(1)}s` : "-";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-white/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 pt-4 pb-4">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 pt-4 pb-4 font-sans">
       <div className="container max-w-md sm:max-w-2xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl mt-12">
-        <Card className="p-4 mb-6">
+        <Card className="p-1 mb-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold mb-2 text-white/80">{quiz?.title}</h1>
+              <h1 className="text-3xl font-bold mb-2 dark:text-white/80">{quiz?.title}</h1>
             </div>
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Your Score</p>
-              <p className="text-xl font-bold text-primary">{participant?.score || 0}</p>
+              <p className="text-xl font-bold text-secondary">{participant?.score || 0}</p>
             </div>
           </div>
         </Card>
 
         {session.status === 'waiting' && (
           <Card className="p-12 text-center animate-in fade-in zoom-in-95 duration-500">
-            <h2 className="text-3xl font-bold mb-4">Get Ready!</h2>
+            <h2 className="text-3xl font-bold mb-4 dark:text-zinc-300">Get Ready!</h2>
             <p className="text-xl text-muted-foreground">
               Waiting for the host to start the quiz...
             </p>
@@ -183,17 +183,17 @@ const PlayQuiz = () => {
         )}
 
         {session.status === 'active' && !session.show_leaderboard && currentQuestion && (
-          <Card className="p-6 bg-card border-border rounded-3xl animate-in fade-in slide-in-from-right-5 duration-500">
+          <Card className="p-4 bg-card border-border rounded-3xl animate-in fade-in slide-in-from-right-5 duration-500">
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-base font-semibold text-muted-foreground">Question</h3>
-              <div className="flex items-center gap-2 text-primary">
+              <div className="flex items-center gap-2 text-secondary">
                 <Clock className="h-4 w-4" />
-                <span className="text-xl font-bold">{timeLeft}s</span>
+                <span className="text-xl font-bold text-secondary">{timeLeft}s</span>
               </div>
             </div>
 
             <div className="mb-6">
-              <p className="text-xl font-bold mb-4">{currentQuestion.question_text}</p>
+              <p className="text-xl font-bold mb-4 bg-muted p-2 rounded-lg">{currentQuestion.question_text}</p>
               {currentQuestion.question_image_url && (
                 <img
                   src={currentQuestion.question_image_url}
@@ -203,7 +203,7 @@ const PlayQuiz = () => {
               )}
             </div>
 
-            <div className="space-y-2 mb-5">
+            <div className="space-y-2 mb-5 text-base sm:text-lg md:text-xl">
               {['A', 'B', 'C', 'D'].map(option => {
                 const optionText = currentQuestion[`option_${option.toLowerCase()}`];
                 if (!optionText) return null;
@@ -219,14 +219,14 @@ const PlayQuiz = () => {
                   <div
                     key={option}
                     onClick={() => handleOptionSelect(option)}
-                    className={`relative p-4 rounded-xl border-2 transition-all ${(hasAnswered || timeLeft === 0)
+                    className={`relative p-2  rounded-xl border-2 transition-all dark:text-zinc-300 ${(hasAnswered || timeLeft === 0)
                       ? 'cursor-default'
                       : 'cursor-pointer hover:border-primary/50'
                       } ${isSelected && !(hasAnswered || timeLeft === 0)
                         ? 'border-primary bg-primary/10'
                         : 'border-border bg-card/50'
                       } ${hasAnswered && isSelected
-                        ? 'border-primary bg-primary/20'
+                        ? 'border-primary bg-orange-300/10'
                         : ''
                       } 
                     ${isCorrect ? 'ring-4 ring-success/50 bg-success/10 border-success scale-105' : ''}`}
@@ -269,7 +269,7 @@ const PlayQuiz = () => {
                 </Button>
               </div>
             ) : (
-              <p className="text-center text-base font-semibold text-primary">
+              <p className="text-center text-base font-semibold text-secondary">
                 <Loader2 className="inline-block mr-2 h-4 w-4 animate-spin" />
                 Answer submitted! Waiting for the host...
               </p>
@@ -278,44 +278,13 @@ const PlayQuiz = () => {
         )}
 
         {session.status === 'active' && session.show_leaderboard && (
-          <Card className="p-8 text-center animate-in fade-in slide-in-from-left-5 duration-500">
+          <Card className="p-4 text-center animate-in fade-in slide-in-from-left-5 duration-500">
             <Trophy className="h-16 w-16 mx-auto mb-4 text-warning" />
-            <h2 className="text-3xl font-bold mb-8">Current Standings</h2>
+            <h2 className="text-3xl font-bold mb-8 dark:text-zinc-200">Current Standings</h2>
             <div className="mb-8">
-              <h4 className="text-xl text-foreground font-semibold">Your Position - {rankText}</h4>
-              <p className="text-sm text-muted-foreground">Correct answers: {participant?.score || 0}</p>
-              <p className="text-sm text-muted-foreground">Voting time: {lastTimeText}</p>
-            </div>
-            <div className="space-y-3">
-              {allParticipants?.map((p, i) => (
-                <div
-                  key={p._id}
-                  className={`flex justify-between items-center p-4 rounded-lg ${p._id === participantId ? 'bg-primary/20 border-2 border-primary' :
-                    i === 0 ? 'bg-warning/20 border-2 border-warning' :
-                      'bg-muted'
-                    }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl font-bold">{i + 1}</span>
-                    <span className="font-semibold">{p.name}</span>
-                  </div>
-                  <span className="text-xl font-bold text-primary">{p.score}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-center text-muted-foreground mt-8">Waiting for host to start the next question...</p>
-          </Card>
-        )}
-
-        {session.status === 'finished' && (
-          <Card className="px-5 pb-8 text-center animate-in fade-in zoom-in-95 duration-700">
-            <DotLottieReact src="https://ik.imagekit.io/devsoc/Quizora/public/Trophy.lottie?updatedAt=1764162087115" autoplay
-              className="h-32 w-32 sm:h-32 sm:w-32 md:h-32 md:w-32 lg:h-40 lg:w-40  mx-auto" />
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl  font-bold mb-2">Final Leaderboard!</h2>
-            <div className="my-5">
-              <h4 className="text-xl font-semibold text-foreground">You finished {rankText}!</h4>
-              <p className="text-sm text-muted-foreground">Correct answers: {participant?.score || 0}</p>
-              <p className="text-sm text-muted-foreground">Voting time: {lastTimeText}</p>
+              <h4 className="text-xl dark:text-white/90 font-semibold">Your Position - {rankText}</h4>
+              <p className="text-sm dark:text-white/70">Correct answers: {participant?.score || 0}</p>
+              <p className="text-sm dark:text-white/70">Voting time: {lastTimeText}</p>
             </div>
             <div className="space-y-3">
               {allParticipants?.map((p, i) => (
@@ -326,18 +295,49 @@ const PlayQuiz = () => {
                       'bg-muted'
                     }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="text-xl font-bold">{i + 1}</span>
+                  <div className="flex items-center gap-3 dark:text-zinc-200 text-base sm:text-lg md:text-xl">
+                    <span className=" font-bold">{i + 1}</span>
                     <span className="font-semibold">{p.name}</span>
                   </div>
-                  <span className="text-xl font-bold text-primary">{p.score}</span>
+                  <span className="text-xl font-bold text-orange-300">{p.score}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-muted mt-8 text-zinc-600">Waiting for host to start the next question...</p>
+          </Card>
+        )}
+
+        {session.status === 'finished' && (
+          <Card className="px-5 pb-8 text-center animate-in fade-in zoom-in-95 duration-700">
+            <DotLottieReact src="https://ik.imagekit.io/devsoc/Quizora/public/Trophy.lottie?updatedAt=1764162087115" autoplay
+              className="h-32 w-32 sm:h-32 sm:w-32 md:h-32 md:w-32 lg:h-40 lg:w-40  mx-auto" />
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl  font-bold mb-2 dark:text-zinc-300">Final Leaderboard!</h2>
+            <div className="my-5">
+              <h4 className="text-xl font-semibold dark:text-white/90">You finished {rankText}!</h4>
+              <p className="text-sm dark:text-white/70">Correct answers: {participant?.score || 0}</p>
+              <p className="text-sm dark:text-white/70">Voting time: {lastTimeText}</p>
+            </div>
+            <div className="space-y-3 dark:text-zinc-200">
+              {allParticipants?.map((p, i) => (
+                <div
+                  key={p._id}
+                  className={`flex justify-between items-center p-2 rounded-lg ${p._id === participantId ? 'bg-primary/20 border-2 border-primary' :
+                    i === 0 ? 'bg-warning/20 border-2 border-warning' :
+                      'bg-muted'
+                    }`}
+                >
+                  <div className="flex items-center gap-3 text-base sm:text-lg md:text-xl">
+                    <span className="font-bold">{i + 1}</span>
+                    <span className="font-semibold">{p.name}</span>
+                  </div>
+                  <span className="text-xl font-bold text-orange-300">{p.score}</span>
                 </div>
               ))}
             </div>
             <Button
               variant="ghost"
               onClick={() => navigate('/dashboard')}
-              className="my-3 mt-6 rounded-full"
+              className="my-3 mt-6 rounded-full dark:text-zinc-400 hover:dark:text-black"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Home

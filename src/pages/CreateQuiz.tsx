@@ -246,19 +246,19 @@ const CreateQuiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 py-8">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 py-8 font-sans">
       <div className="container max-w-4xl mx-auto px-4">
         <Button
           variant="ghost"
           onClick={() => navigate('/dashboard')}
-          className="mb-6 rounded-full"
+          className="mb-6 rounded-full text-gray-500 dark:hover:bg-orange-300/50"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Home
         </Button>
 
         <Card className="p-2 sm:p-5 md:p-6 lg:p-8 shadow-lg rounded-2xl border-2 border-transparent hover:border-primary transition-all duration-300">
-          <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-4xl font-bold mb-8 bg-gradient-to-b from-primary to-secondary via-orange-300 bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-2xl md:text-2xl lg:text-4xl font-bold mb-8 bg-gradient-to-b from-primary to-orange-300 bg-clip-text text-transparent">
             {quizIdParam ? "Edit Quiz" : "Create Your Quiz"}
           </h1>
 
@@ -270,7 +270,7 @@ const CreateQuiz = () => {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter an exciting title"
-                className="mt-2"
+                className="mt-2 dark:text-zinc-300"
               />
             </div>
 
@@ -281,7 +281,7 @@ const CreateQuiz = () => {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="What's this quiz about?"
-                className="mt-2"
+                className="mt-2 dark:text-zinc-300"
               />
             </div>
           </div>
@@ -293,18 +293,18 @@ const CreateQuiz = () => {
                 <Button
                   variant="link"
                   onClick={() => setShowSettings((s) => !s)}
-                  className="rounded-full text-gray-500 "
+                  className="rounded-full text-gray-500"
                 >
                   <Settings className="h-5 w-5" />
                 </Button>
               </div>
 
               {showSettings && (
-                <Card className="absolute right-0 mt-2 w-80 p-4 z-20 dark:text-secondary">
+                <Card className="absolute right-0 mt-2 w-80 p-4 z-20 dark:text-zinc-300">
                   <div className="flex justify-between items-center mb-3">
                     <h3 className="text-sm font-semibold">Quiz Settings</h3>
-                    <Button variant="link" size="sm" className="no-underline hover:no-underline rounded-full text-gray-400" onClick={() => setShowSettings(false)}>
-                      <X className="h-4 w-4" />
+                    <Button variant="link" size="sm" className="no-underline hover:no-underline rounded-full" onClick={() => setShowSettings(false)}>
+                      <X className="h-4 w-4 text-zinc-500" />
                     </Button>
                   </div>
 
@@ -356,9 +356,9 @@ const CreateQuiz = () => {
             </div>
 
             {questions.map((question, index) => (
-              <Card key={index} className="p-2 sm:p-2 md:p-4 lg:p-6 border-2">
+              <Card key={index} className="p-2 sm:p-2 md:p-4 lg:p-6 border-2 dark:text-zinc-200">
                 <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-lg font-semibold text-secondary">Question {index + 1}</h3>
+                  <h3 className="text-lg font-semibold text-orange-300">Question {index + 1}</h3>
                   {questions.length > 1 && (
                     <Button
                       variant="ghost"
@@ -378,7 +378,7 @@ const CreateQuiz = () => {
                       value={question.question_text}
                       onChange={(e) => updateQuestion(index, 'question_text', e.target.value)}
                       placeholder="Enter your question"
-                      className="mt-2"
+                      className="mt-2 dark:text-zinc-300"
                     />
                   </div>
 
@@ -405,7 +405,7 @@ const CreateQuiz = () => {
                               value={opt}
                               onChange={(e) => updateOption(index, optIndex, e.target.value)}
                               placeholder={`Option ${letter}`}
-                              className="mt-2 text-xs"
+                              className="mt-2 text-xs dark:text-zinc-300"
                             />
                           </div>
                           <div className="flex-1">
@@ -431,7 +431,7 @@ const CreateQuiz = () => {
                         variant="ghost"
                         onClick={() => addOption(index)}
                         size="sm"
-                        className="rounded-full dark:hover:bg-primary-foreground dark:hover:text-white/70 dark:text-secondary"
+                        className="rounded-full dark:hover:bg-primary-foreground dark:hover:text-white/70 dark:text-orange-200 bg-gray-100 dark:bg-muted"
                         disabled={question.options.length >= 4} // Disable adding more than 4 options
                       >
                         <Plus className="h-4 w-4" />
@@ -446,7 +446,7 @@ const CreateQuiz = () => {
                       <select
                         value={question.correct_answer}
                         onChange={(e) => updateQuestion(index, 'correct_answer', e.target.value)}
-                        className="w-full mt-2 p-2 border rounded-md pr-3"
+                        className="w-full mt-2 p-2 border rounded-md pr-3 dark:text-zinc-300"
                       >
                         {question.options.map((_, i) => {
                           const letter = String.fromCharCode(65 + i);
@@ -461,7 +461,7 @@ const CreateQuiz = () => {
                       <select
                         value={question.time_limit}
                         onChange={(e) => updateQuestion(index, 'time_limit', parseInt(e.target.value))}
-                        className="w-full mt-2 p-2 border rounded-md pr-3"
+                        className="w-full mt-2 p-2 border rounded-md pr-3 dark:text-zinc-300"
                       >
                         {TIME_OPTIONS.map((opt) => (
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -474,15 +474,15 @@ const CreateQuiz = () => {
             ))}
           </div>
           
-          <div className="flex flex-col lg:flex-row justify-between">
+           <div className="flex flex-col lg:flex-row justify-between">
 
             <div className="mt-5">
-              <Button variant="ghost" onClick={addQuestion} className="rounded-full p-2 dark:hover:bg-primary-foreground dark:hover:text-white/70 dark:text-secondary">
+              <Button variant="ghost" onClick={addQuestion} className="rounded-full p-2 bg-gray-100 dark:hover:bg-primary-foreground dark:hover:text-white/70 dark:text-secondar dark:bg-muted dark:text-orange-200">
                 <Plus className="h-4 w-4" />
                 Add Question
               </Button>
             </div>
-            <div className="w-23 mt-5 ml-12">
+            <div className="w-23 mt-5 flex flex-row justify-center">
               <Button
                 onClick={handleSave}
                 disabled={loading}
@@ -492,11 +492,8 @@ const CreateQuiz = () => {
                 {loading ? "Saving..." : (quizIdParam ? "Update Quiz" : "Create Quiz")}
               </Button>
             </div>
-
-            
           </div>
 
-          
         </Card>
       </div>
     </div>

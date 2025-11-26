@@ -151,13 +151,13 @@ const HostQuiz = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 p-2 ">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 p-2 font-sans">
       <div className="container max-w-6xl mx-auto mt-20">
-        <Card className="p-4 mb-6">
+        <Card className="p-2 mb-6">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold mb-2 dark:text-white/80">{quiz?.title}</h1>
-              <p className="text-muted-foreground">Join Code: <span className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-primary">{session?.join_code}</span></p>
+              <p className="text-muted-foreground">Join Code: <span className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-orange-300">{session?.join_code}</span></p>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
@@ -169,7 +169,7 @@ const HostQuiz = () => {
 
           {session?.status === 'waiting' && (
             <div className="text-center py-12">
-              <h2 className="text-2xl font-bold mb-4">Waiting for participants...</h2>
+              <h2 className="text-2xl font-bold mb-4 dark:text-zinc-300">Waiting for participants...</h2>
               <p className="text-muted-foreground mb-6">
                 Share the code above for players to join
               </p>
@@ -189,7 +189,7 @@ const HostQuiz = () => {
             <div className="space-y-4 animate-in fade-in slide-in-from-right-5 duration-500">
 
               <div className="flex justify-between items-center mt-2">
-                <h2 className="text-xl font-bold">
+                <h2 className="text-xl font-bold dark:text-white">
                   Question {session.current_question_index + 1} of {questions?.length}
                 </h2>
                 <div className="flex items-center gap-2 text-warning">
@@ -199,7 +199,7 @@ const HostQuiz = () => {
               </div>
 
               <div className="p-4 bg-muted rounded-lg">
-                <p className="sm:text-2xl md:text-2xl lg:text-2xl xl:text-2xl font-semibold mb-4">{currentQuestion.question_text}</p>
+                <p className="sm:text-2xl md:text-2xl lg:text-2xl xl:text-2xl font-semibold mb-4 dark:text-zinc-300">{currentQuestion.question_text}</p>
                 {currentQuestion.question_image_url && (
                   <img
                     src={currentQuestion.question_image_url}
@@ -238,7 +238,7 @@ const HostQuiz = () => {
 
               </div>
 
-              <div className="grid grid-cols-1 gap-4 text-primary-glow">
+              <div className="grid grid-cols-1 gap-4 dark:text-zinc-300">
                 {options.map(({ key: option, text: optionText }) => {
                   const colors = {
                     default: 'gray-600 border-gray-300 '
@@ -249,10 +249,10 @@ const HostQuiz = () => {
                   return (
                     <div
                       key={option}
-                      className={`p-2 sm:p-3 md:p-4 rounded-xl bg-gradient-to-br ${colors.default} text-primary-glow flex items-center justify-start gap-4 transition-all duration-200 ${isCorrect ? 'ring-4 ring-success/50 bg-success/10 border-success scale-105' : ''}`}
+                      className={`p-2 sm:p-3 md:p-4   rounded-xl bg-muted flex items-center justify-start gap-4 transition-all duration-200 ${isCorrect ? 'ring-4 ring-success/50 bg-success/10 border-success scale-105' : ''}`}
                     >
-                      <span className="w-10 h-10 rounded-full p-1 bg-muted text-muted-foreground text-xl font-bold text-center">{option}</span>
-                      <span className="text-xl">{optionText}</span>
+                      <span className="w-10 h-10 rounded-full p-1 bg-gray-200 dark:bg-black text-muted-foreground text-base sm:text-lg md:text-xl font-bold text-center">{option}</span>
+                      <span className="text-base sm:text-lg md:text-xl">{optionText}</span>
                     </div>
                   );
                 })}
@@ -272,9 +272,9 @@ const HostQuiz = () => {
             <div className="text-center py-4 animate-in fade-in slide-in-from-left-5 duration-500">
 
               <Trophy className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 lg:h-20 lg:w-20 mx-auto mb-4 text-warning" />
-              <h2 className="text-3xl font-bold mb-6">Leaderboard</h2>
+              <h2 className="text-3xl font-bold mb-6 dark:text-zinc-100">Leaderboard</h2>
 
-              <div className="space-y-3 mb-8">
+              <div className="space-y-3 mb-8 dark:text-zinc-300">
                 {participants?.map((p, i) => (
                   <div
                     key={p._id}
@@ -284,11 +284,11 @@ const HostQuiz = () => {
                           'bg-muted/50'
                       }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl font-bold">{i + 1}</span>
+                    <div className="flex items-center gap-3 text-base sm:text-lg md:text-xl">
+                      <span className="font-bold">{i + 1}</span>
                       <span className="font-semibold">{p.name}</span>
                     </div>
-                    <span className="text-xl font-bold text-primary">{p.score}</span>
+                    <span className="text-xl font-bold text-orange-300">{p.score}</span>
                   </div>
                 ))}
               </div>
@@ -298,7 +298,7 @@ const HostQuiz = () => {
                   onClick={skipLeaderboard}
                   size="lg"
                   variant="outline"
-                  className="p-3 sm:p-3 md:p-4 rounded-full"
+                  className="p-3 sm:p-3 md:p-4 rounded-full dark:text-zinc-300 hover:dark:text-black"
                 >
                   <SkipForward className="h-5 w-5" />
                   Skip
@@ -319,7 +319,7 @@ const HostQuiz = () => {
 
               <DotLottieReact src="https://ik.imagekit.io/devsoc/Quizora/public/Trophy.lottie?updatedAt=1764162087115" autoplay
                 className="h-32 w-32 sm:h-32 sm:w-32 md:h-32 md:w-32 lg:h-40 lg:w-40 mx-auto" />
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold mb-8">Final Leaderboard!</h2>
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold mb-8 dark:text-zinc-300">Final Leaderboard!</h2>
 
               <div className="space-y-3 mb-8">
                 {participants?.map((p, i) => (
@@ -328,11 +328,11 @@ const HostQuiz = () => {
                     className={`flex justify-between items-center p-2 rounded-lg ${i === 0 ? 'bg-warning/20 border-2 border-warning' : 'bg-muted'
                       }`}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl font-bold">{i + 1}</span>
+                    <div className="flex items-center gap-3 dark:text-zinc-200 text-base sm:text-lg md:text-xl">
+                      <span className="font-bold">{i + 1}</span>
                       <span className="font-semibold">{p.name}</span>
                     </div>
-                    <span className="text-xl font-bold text-primary">{p.score}</span>
+                    <span className=" ml-1 text-xl font-bold text-orange-300">{p.score}</span>
                   </div>
                 ))}
               </div>
@@ -340,7 +340,7 @@ const HostQuiz = () => {
               <Button
                 variant="ghost"
                 onClick={() => navigate('/dashboard')}
-                className="my-3 rounded-full"
+                className="my-3 rounded-full dark:text-zinc-400 hover:dark:text-black"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Back to Home

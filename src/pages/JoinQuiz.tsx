@@ -71,18 +71,18 @@ const JoinQuiz = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white/40 via-accent/60 to-white/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 flex items-center justify-center p-4 animate-fade-in-up">
+    <div className="min-h-screen bg-gradient-to-t from-zinc-200/80 via-zinc-200/80 to-zinc-200/80 dark:bg-gradient-to-b dark:from-black/80 dark:via-black/80 dark:to-black/80 flex items-center justify-center p-4 animate-fade-in-up font-sans">
       <Card className="w-full max-w-md p-8 bg-card border-border border-x-primary-foreground-30 rounded-3xl shadow-2xl">
         <Button
           variant="ghost"
           onClick={() => navigate(isSignedIn ? '/dashboard' : '/')}
-          className="mb-6 text-primary hover:text-primary hover:bg-primary/10 hover: rounded-full"
+          className="mb-6  hover:text-zinc-400 hover:bg-primary/10 hover: rounded-full text-zinc-500"
         >
           <ArrowLeft className=" h-4 w-4" />
           Back
         </Button>
 
-        <h1 className="text-4xl font-bold mb-2 text-primary">
+        <h1 className="text-4xl font-bold mb-2 text-orange-300">
           Join Quiz
         </h1>
         <p className="text-muted-foreground mb-8">
@@ -91,7 +91,7 @@ const JoinQuiz = () => {
 
         <div className="space-y-6">
           <div>
-            <Label htmlFor="code" className="text-foreground">Quiz Code</Label>
+            <Label htmlFor="code" className="dark:text-zinc-300">Quiz Code</Label>
             <Input
               id="code"
               value={code}
@@ -103,7 +103,7 @@ const JoinQuiz = () => {
           </div>
 
           <div>
-            <Label htmlFor="name" className="text-foreground">Your Name</Label>
+            <Label htmlFor="name" className="dark:text-zinc-300">Your Name</Label>
             <Input
               id="name"
               value={name}

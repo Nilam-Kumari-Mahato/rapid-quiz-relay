@@ -22,7 +22,7 @@ export default function Dashboard() {
   const deleteQuiz = useMutation(api.quizzes.deleteQuiz);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="font-sans">
       <AppSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -31,13 +31,13 @@ export default function Dashboard() {
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0 font-sans">
 
 
 
           <div className="bg-muted/30 min-h-[100vh] flex-1 rounded-md md:min-h-min ">
             <div className="flex flex-row w-full justify-end px-4 md:px-8 lg:px-32">
-              <Button variant="ghost" onClick={() => navigate('/join')} className="hover:bg-primary-glow rounded-full m-1 mt-5 px-5">
+              <Button variant="ghost" onClick={() => navigate('/join')} className="hover:bg-primary-glow rounded-full m-1 mt-5 px-5 dark:text-zinc-300 dark:hover:bg-muted">
                 Join Quiz
               </Button>
               <Button onClick={() => navigate('/create-quiz')} className="text-xs lg:text-sm bg-gradient-to-r from-primary to-secondary text-primary-foreground hover:brightness-90 hover:text-black rounded-full m-2 mt-5 px-3 py-2 lg:p-5 ">
@@ -58,7 +58,7 @@ export default function Dashboard() {
 
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="text-lg font-bold line-clamp-1">{q.title}</h3>
+                        <h3 className="text-lg font-bold line-clamp-1 dark:text-zinc-200">{q.title}</h3>
                         {q.description && <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{q.description.length > 10 ? `${q.description.substring(0, 10)}...` : q.description}</p>}
                       </div>
 
@@ -69,16 +69,16 @@ export default function Dashboard() {
 
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="p-2 rounded hover:bg-muted/30">
+                          <button className="p-2 rounded hover:bg-muted">
                             <MoreVertical className="h-5 w-5" />
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
-                          <DropdownMenuItem onSelect={() => navigate(`/create-quiz?quizId=${String(q._id)}`)}>
-                            <Edit className="mr-2 h-4 w-4" /> Edit
+                          <DropdownMenuItem onSelect={() => navigate(`/create-quiz?quizId=${String(q._id)}`)} className="dark:text-zinc-300">
+                            <Edit className=" dark:text-zinc-500 h-4 w-4" /> Edit
                           </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => navigate(`/quiz/${String(q._id)}`)}>
-                            <Play className="mr-2 h-4 w-4" /> Run
+                          <DropdownMenuItem onSelect={() => navigate(`/quiz/${String(q._id)}`)} className="dark:text-zinc-300">
+                            <Play className="dark:text-zinc-500 h-4 w-4" /> Run
                           </DropdownMenuItem>
                           <DropdownMenuItem onSelect={async () => {
                             if (!confirm(`Delete quiz "${q.title}"? This cannot be undone.`)) return;
@@ -88,8 +88,8 @@ export default function Dashboard() {
                             } catch (err: any) {
                               toast({ title: "Error", description: `Failed to delete quiz: ${err.message}`, variant: "destructive" });
                             }
-                          }}>
-                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                          }} className="dark:text-zinc-300">
+                            <Trash2 className="dark:text-zinc-500 h-4 w-4" /> Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
