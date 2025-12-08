@@ -103,20 +103,32 @@ const PlayQuiz = () => {
   const submitAnswer = async () => {
     if (hasAnswered || !selectedAnswer || !currentQuestion || !sessionId || !participantId) return;
 
+    // Capture the exact moment of submission
+    const client_timestamp = Date.now();
+    
     const time_taken = session.currentQuestionStartTime
-      ? (Date.now() - session.currentQuestionStartTime) / 1000
+      ? (client_timestamp - session.currentQuestionStartTime) / 1000
       : currentQuestion.time_limit;
 
     try {
-      await submitAnswerMutation({
+      const result = await submitAnswerMutation({
         participantId: participantId as Id<"participants">,
         questionId: currentQuestion._id,
         sessionId: sessionId as Id<"quiz_sessions">,
         answer: selectedAnswer,
-        time_taken: time_taken
+        time_taken: time_taken,
+        client_timestamp: client_timestamp,
       });
 
-      toast({ title: "Answer submitted!" });
+      if (result?.success) {
+        toast({ title: "Answer submitted!" });
+      } else if (result?.reason === "already_answered") {
+        toast({ 
+          title: "Already Answered", 
+          description: "You've already submitted an answer for this question",
+          variant: "destructive" 
+        });
+      }
     } catch (error: any) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     }

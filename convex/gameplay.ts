@@ -146,34 +146,53 @@ export const submitAnswer = mutation({
     sessionId: v.id("quiz_sessions"),
     answer: v.string(),
     time_taken: v.number(),
+    client_timestamp: v.number(), // Client-side timestamp when answer was submitted
   },
   handler: async (ctx, args) => {
-    const { participantId, questionId, sessionId, answer, time_taken } = args;
+    const { participantId, questionId, sessionId, answer, time_taken, client_timestamp } = args;
 
-    const [session, existingAnswer, question, participant] = await Promise.all([
+    // Use a transaction-like approach: check for existing answer first
+    const existingAnswer = await ctx.db
+      .query("answers")
+      .withIndex("by_participant_question", (q) =>
+        q.eq("participantId", participantId).eq("questionId", questionId)
+      )
+      .first();
+
+    // If answer already exists, reject this submission
+    if (existingAnswer) {
+      return { success: false, reason: "already_answered" };
+    }
+
+    // Fetch other data in parallel
+    const [session, question, participant] = await Promise.all([
       ctx.db.get(sessionId),
-      ctx.db
-        .query("answers")
-        .withIndex("by_participant_question", (q) =>
-          q.eq("participantId", participantId).eq("questionId", questionId)
-        )
-        .first(),
       ctx.db.get(questionId),
       ctx.db.get(participantId),
     ]);
 
     if (!session) throw new Error("Session not found.");
-    if (existingAnswer) return; // Already answered
     if (!question) throw new Error("Question not found");
     if (!participant) throw new Error("Participant not found");
 
+    // Check if submission is within time limit using client timestamp
+    const questionStartTime = session.currentQuestionStartTime || Date.now();
+    const actualTimeTaken = (client_timestamp - questionStartTime) / 1000;
+    
     const isLate = session.currentQuestionEndTime
-      ? Date.now() > (session.currentQuestionEndTime + GRACE_PERIOD_MS)
+      ? client_timestamp > (session.currentQuestionEndTime + GRACE_PERIOD_MS)
       : false;
 
     const is_correct = !isLate && question.correct_answer === answer;
     const score = is_correct ? 1 : 0;
 
+    // Use the more accurate client-side time_taken, but validate it
+    const validatedTimeTaken = Math.min(
+      Math.max(actualTimeTaken, time_taken),
+      question.time_limit + (GRACE_PERIOD_MS / 1000)
+    );
+
+    // Insert answer and update score atomically
     await Promise.all([
       ctx.db.insert("answers", {
         sessionId,
@@ -182,11 +201,13 @@ export const submitAnswer = mutation({
         answer,
         is_correct,
         score,
-        time_taken,
+        time_taken: validatedTimeTaken,
       }),
       ctx.db.patch(participantId, {
         score: participant.score + score,
       }),
     ]);
+
+    return { success: true, score, is_correct };
   },
 });

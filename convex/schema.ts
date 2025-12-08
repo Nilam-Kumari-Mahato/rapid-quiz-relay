@@ -70,8 +70,9 @@ export default defineSchema({
     answer: v.string(),
     is_correct: v.boolean(),
     score: v.number(),
-    time_taken: v.number(), // Time in seconds
+    time_taken: v.number(), // Time in seconds (validated client-side time)
   })
     .index("by_session_question", ["sessionId", "questionId"])
-    .index("by_participant_question", ["participantId", "questionId"]),
+    .index("by_participant_question", ["participantId", "questionId"])
+    .index("by_session_question_time", ["sessionId", "questionId", "time_taken"]),
 });
