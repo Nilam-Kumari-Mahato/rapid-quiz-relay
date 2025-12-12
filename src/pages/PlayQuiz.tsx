@@ -9,6 +9,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Id } from "../../convex/_generated/dataModel";
+import { Progress } from "@chakra-ui/react";
 
 const PlayQuiz = () => {
   const { sessionId } = useParams();
@@ -42,6 +43,7 @@ const PlayQuiz = () => {
   const submittedAnswer = (sessionData as any)?.submittedAnswer ?? null;
 
   const [timeLeft, setTimeLeft] = useState(30);
+  const [progressPercent, setProgressPercent] = useState(100);
   const [timeUpNotified, setTimeUpNotified] = useState(false);
 
   useEffect(() => {
@@ -66,7 +68,12 @@ const PlayQuiz = () => {
         const remainingMs = session.currentQuestionEndTime! - now;
         const remainingSeconds = Math.max(0, Math.floor(remainingMs / 1000));
 
+        // Calculate precise progress percentage based on milliseconds
+        const totalMs = currentQuestion.time_limit * 1000;
+        const percent = Math.max(0, Math.min(100, (remainingMs / totalMs) * 100));
+
         setTimeLeft(remainingSeconds);
+        setProgressPercent(percent);
 
         if (remainingSeconds === 0 && !hasAnswered && !timeUpNotified) {
           toast({ title: "Time's up!", description: "Waiting for next question." });
@@ -75,13 +82,15 @@ const PlayQuiz = () => {
       };
 
       updateTimer();
-      const timer = setInterval(updateTimer, 1000);
+      const timer = setInterval(updateTimer, 100);
       return () => clearInterval(timer);
 
     } else if (hasAnswered) {
       setTimeLeft(0);
+      setProgressPercent(0);
     } else if (session.status === 'waiting' && currentQuestion) {
       setTimeLeft(currentQuestion.time_limit);
+      setProgressPercent(100);
     }
 
   }, [
@@ -105,7 +114,7 @@ const PlayQuiz = () => {
 
     // Capture the exact moment of submission
     const client_timestamp = Date.now();
-    
+
     const time_taken = session.currentQuestionStartTime
       ? (client_timestamp - session.currentQuestionStartTime) / 1000
       : currentQuestion.time_limit;
@@ -123,10 +132,10 @@ const PlayQuiz = () => {
       if (result?.success) {
         toast({ title: "Answer submitted!" });
       } else if (result?.reason === "already_answered") {
-        toast({ 
-          title: "Already Answered", 
+        toast({
+          title: "Already Answered",
           description: "You've already submitted an answer for this question",
-          variant: "destructive" 
+          variant: "destructive"
         });
       }
     } catch (error: any) {
@@ -220,7 +229,70 @@ const PlayQuiz = () => {
               </div>
             </div>
 
-            <div className="mb-6">
+            <Progress.Root
+              value={progressPercent}
+              colorPalette={timeLeft <= 5 ? "orange" : "gray"}
+              size="sm"
+              css={{
+                '& [data-part="track"]': {
+                  borderRadius: '9999px',
+                  overflow: 'hidden',
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                },
+                '& [data-part="range"]': {
+                  borderRadius: '9999px',
+                  background: (() => {
+                    if (!currentQuestion) return 'white';
+
+                    // Calculate time thresholds as percentages
+                    const timeLimit = currentQuestion.time_limit;
+                    const tenSecPercent = (10 / timeLimit) * 100;
+                    const fiveSecPercent = (5 / timeLimit) * 100;
+                    const fourPointSevenFiveSecPercent = (4.75 / timeLimit) * 100;
+
+                    // Three-stage color transition: white → butter yellow → orange
+                    if (progressPercent > tenSecPercent) {
+                      // Stage 1: Pure white
+                      return `linear-gradient(90deg, 
+                        rgb(255, 255, 255) 0%, 
+                        rgb(255, 255, 255) 50%,
+                        rgb(255, 255, 255) 100%)`;
+                    } else if (progressPercent > fiveSecPercent) {
+                      // Stage 2: Blend from white to butter yellow (10s to 5s)
+                      const yellowBlend = ((tenSecPercent - progressPercent) / (tenSecPercent - fiveSecPercent)) * 100;
+                      return `linear-gradient(90deg, 
+                        color-mix(in srgb, rgb(255, 223, 128) ${yellowBlend}%, rgb(255, 255, 255)) 0%, 
+                        color-mix(in srgb, rgb(255, 215, 100) ${yellowBlend}%, rgb(255, 255, 255)) 50%,
+                        color-mix(in srgb, rgb(255, 207, 80) ${yellowBlend}%, rgb(255, 255, 255)) 100%)`;
+                    } else if (progressPercent > fourPointSevenFiveSecPercent) {
+                      // Stage 3: Quick blend from butter yellow to orange (5s to 4.75s)
+                      const orangeBlend = ((fiveSecPercent - progressPercent) / (fiveSecPercent - fourPointSevenFiveSecPercent)) * 100;
+                      return `linear-gradient(90deg, 
+                        color-mix(in srgb, rgb(251, 146, 60) ${orangeBlend}%, rgb(255, 223, 128)) 0%, 
+                        color-mix(in srgb, rgb(249, 115, 22) ${orangeBlend}%, rgb(255, 215, 100)) 50%,
+                        color-mix(in srgb, rgb(234, 88, 12) ${orangeBlend}%, rgb(255, 207, 80)) 100%)`;
+                    } else {
+                      // Stage 4: Full orange (< 4.75s)
+                      return `linear-gradient(90deg, 
+                        rgb(251, 146, 60) 0%, 
+                        rgb(249, 115, 22) 50%,
+                        rgb(234, 88, 12) 100%)`;
+                    }
+                  })(),
+                  transition: 'width 0.1s linear',
+                  willChange: 'width, background',
+                  boxShadow: timeLeft <= 5
+                    ? `0 0 ${10 + (5 - timeLeft) * 2}px rgba(249, 115, 22, ${0.3 + (5 - timeLeft) * 0.05})`
+                    : '0 0 5px rgba(255, 255, 255, 0.2)'
+                }
+              }}
+            >
+              <Progress.Track>
+                <Progress.Range />
+              </Progress.Track>
+            </Progress.Root>
+
+            <div className="mt-4 mb-6">
               <p className="text-xl font-bold mb-4 bg-muted p-2 rounded-lg">{currentQuestion.question_text}</p>
               {currentQuestion.question_image_url && (
                 <img
