@@ -173,10 +173,10 @@ export const getHostSessionData = query({
       total_time: participantTotalTimes[p._id] || 0
     }));
 
-    // Sort by score DESC, then by total_time ASC (lower remaining time = faster)
+    // Sort by score DESC, then by total_time ASC (lower time taken = faster)
     const sortedParticipants = participantsWithTime.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      return a.total_time - b.total_time;  // Lower total remaining time wins (faster)
+      return a.total_time - b.total_time;  // Lower total time taken wins (faster)
     });
 
     return { session, quiz, questions, participants: sortedParticipants, currentQuestion, answerStats };
@@ -275,10 +275,10 @@ export const getPlayerSessionData = query({
       return { ...p, score: visibleScore, total_time: participantTotalTimes[p._id] || 0 };
     });
 
-    // Sort by score DESC, then by total_time ASC (lower remaining time = faster)
+    // Sort by score DESC, then by total_time ASC (lower time taken = faster)
     const sortedVisibleParticipants = visibleParticipants.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
-      return a.total_time - b.total_time;  // Lower total remaining time wins (faster)
+      return a.total_time - b.total_time;  // Lower total time taken wins (faster)
     });
 
     const visibleParticipant = (() => {
@@ -305,6 +305,7 @@ export const getPlayerSessionData = query({
       hasAnswered,
       submittedAnswer: answerDoc?.answer || null,
       lastTimeTaken: answerDoc?.time_taken || null,
+      totalQuestions: questions.length,
     };
   },
 });

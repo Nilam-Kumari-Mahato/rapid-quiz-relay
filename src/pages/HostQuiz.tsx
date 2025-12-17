@@ -175,17 +175,17 @@ const HostQuiz = () => {
         <Card className="px-3 sm:px-4 md:px-5 lg:px-6 py-1.5 sm:py-2 md:py-2.5 lg:py-3 mb-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold mb-2 dark:text-white/80">{quiz?.title}</h1>
-              <p className="text-muted-foreground">Join Code: <span className="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-bold text-orange-300">{session?.join_code}</span></p>
+              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 dark:text-white/80">{quiz?.title}</h1>
+              <p className="text-xs sm:text-sm md:text-base text-muted-foreground">Join Code: <span className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold text-orange-300">{session?.join_code}</span></p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
               {session?.status === 'active' && session?.show_leaderboard && (
-                <div className="flex items-center">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <Button
                     onClick={endQuiz}
                     size="sm"
                     variant="ghost"
-                    className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-md rounded-full hover:bg-muted/70 text-red-400 hover:text-white/70 opacity-70"
+                    className="px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 md:text-base rounded-full hover:bg-muted/70 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-white/70 opacity-70"
                   >
                     End Quiz
                   </Button>
@@ -193,7 +193,7 @@ const HostQuiz = () => {
                     onClick={nextQuestion}
                     size="sm"
                     variant="ghost"
-                    className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-md rounded-full hover:bg-muted/50 hover:text-orange-300 opacity-70"
+                    className="px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 md:text-base rounded-full hover:bg-muted/50 hover:text-orange-300 opacity-70"
                   >
                     Next Question
                   </Button>
@@ -203,15 +203,16 @@ const HostQuiz = () => {
                 <Button
                   variant="ghost"
                   onClick={() => navigate('/dashboard')}
-                  className="px-3 py-2 text-sm sm:px-4 sm:py-2 sm:text-base md:px-5 md:py-3 md:text-md rounded-full hover:bg-muted/50 hover:text-orange-300 opacity-70"
+                  className="px-2 py-1 text-xs sm:px-3 sm:py-1.5 sm:text-sm md:px-4 md:py-2 md:text-base rounded-full hover:bg-muted/50 hover:text-orange-300 opacity-70"
                 >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to Home
+                  <ArrowLeft className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Back to Home</span>
+                  <span className="sm:hidden">Home</span>
                 </Button>
               )}
-              <div className="flex items-center gap-2">
-                <Users className="h-5 w-5 text-muted-foreground" />
-                <span className="font-bold">{participants?.length || 0}</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" />
+                <span className="text-sm sm:text-base font-bold">{participants?.length || 0}</span>
               </div>
             </div>
           </div>
@@ -255,12 +256,12 @@ const HostQuiz = () => {
                   '& [data-part="track"]': {
                     borderRadius: '9999px',
                     overflow: 'hidden',
-                    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                    backgroundColor: 'light-dark(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1))'
                   },
                   '& [data-part="range"]': {
                     borderRadius: '9999px',
                     background: (() => {
-                      if (!currentQuestion) return 'white';
+                      if (!currentQuestion) return 'light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))';
 
                       // Calculate time thresholds as percentages
                       const timeLimit = currentQuestion.time_limit;
@@ -268,40 +269,42 @@ const HostQuiz = () => {
                       const fiveSecPercent = (5 / timeLimit) * 100;
                       const fourPointSevenFiveSecPercent = (4.75 / timeLimit) * 100;
 
-                      // Three-stage color transition: white → butter yellow → orange
+                      // Three-stage color transition
+                      // Light mode: zinc-400 (lighter gray) → butter yellow → softer orange
+                      // Dark mode: white (70% opacity) → butter yellow → softer orange
                       if (progressPercent > tenSecPercent) {
-                        // Stage 1: Pure white
+                        // Stage 1: zinc-400 (light) or white 70% (dark)
                         return `linear-gradient(90deg, 
-                          rgb(255, 255, 255) 0%, 
-                          rgb(255, 255, 255) 50%,
-                          rgb(255, 255, 255) 100%)`;
+                          light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7)) 0%, 
+                          light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7)) 50%,
+                          light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7)) 100%)`;
                       } else if (progressPercent > fiveSecPercent) {
-                        // Stage 2: Blend from white to butter yellow (10s to 5s)
+                        // Stage 2: Blend to butter yellow (10s to 5s)
                         const yellowBlend = ((tenSecPercent - progressPercent) / (tenSecPercent - fiveSecPercent)) * 100;
                         return `linear-gradient(90deg, 
-                          color-mix(in srgb, rgb(255, 223, 128) ${yellowBlend}%, rgb(255, 255, 255)) 0%, 
-                          color-mix(in srgb, rgb(255, 215, 100) ${yellowBlend}%, rgb(255, 255, 255)) 50%,
-                          color-mix(in srgb, rgb(255, 207, 80) ${yellowBlend}%, rgb(255, 255, 255)) 100%)`;
+                          color-mix(in srgb, rgb(255, 223, 128) ${yellowBlend}%, light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))) 0%, 
+                          color-mix(in srgb, rgb(255, 215, 100) ${yellowBlend}%, light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))) 50%,
+                          color-mix(in srgb, rgb(255, 207, 80) ${yellowBlend}%, light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))) 100%)`;
                       } else if (progressPercent > fourPointSevenFiveSecPercent) {
-                        // Stage 3: Quick blend from butter yellow to orange (5s to 4.75s)
+                        // Stage 3: Quick blend from butter yellow to softer orange (5s to 4.75s)
                         const orangeBlend = ((fiveSecPercent - progressPercent) / (fiveSecPercent - fourPointSevenFiveSecPercent)) * 100;
                         return `linear-gradient(90deg, 
-                          color-mix(in srgb, rgb(251, 146, 60) ${orangeBlend}%, rgb(255, 223, 128)) 0%, 
-                          color-mix(in srgb, rgb(249, 115, 22) ${orangeBlend}%, rgb(255, 215, 100)) 50%,
-                          color-mix(in srgb, rgb(234, 88, 12) ${orangeBlend}%, rgb(255, 207, 80)) 100%)`;
+                          color-mix(in srgb, rgba(251, 146, 60, 0.85) ${orangeBlend}%, rgb(255, 223, 128)) 0%, 
+                          color-mix(in srgb, rgba(249, 115, 22, 0.85) ${orangeBlend}%, rgb(255, 215, 100)) 50%,
+                          color-mix(in srgb, rgba(234, 88, 12, 0.85) ${orangeBlend}%, rgb(255, 207, 80)) 100%)`;
                       } else {
-                        // Stage 4: Full orange (< 4.75s)
+                        // Stage 4: Softer orange (< 4.75s)
                         return `linear-gradient(90deg, 
-                          rgb(251, 146, 60) 0%, 
-                          rgb(249, 115, 22) 50%,
-                          rgb(234, 88, 12) 100%)`;
+                          rgba(251, 146, 60, 0.85) 0%, 
+                          rgba(249, 115, 22, 0.85) 50%,
+                          rgba(234, 88, 12, 0.85) 100%)`;
                       }
                     })(),
                     transition: 'width 0.1s linear',
                     willChange: 'width, background',
                     boxShadow: timeLeft <= 5
-                      ? `0 0 ${10 + (5 - timeLeft) * 2}px rgba(249, 115, 22, ${0.3 + (5 - timeLeft) * 0.05})`
-                      : '0 0 5px rgba(255, 255, 255, 0.2)'
+                      ? `0 0 ${10 + (5 - timeLeft) * 2}px rgba(249, 115, 22, ${0.2 + (5 - timeLeft) * 0.04})`
+                      : 'light-dark(0 0 5px rgba(161, 161, 170, 0.25), 0 0 5px rgba(255, 255, 255, 0.15))'
                   }
                 }}
               >
@@ -390,9 +393,9 @@ const HostQuiz = () => {
                 {participants?.map((p, i) => (
                   <div
                     key={p._id}
-                    className={`flex justify-between items-center p-2 sm:p-3 md:p-4 rounded-lg ${i === 0 ? 'bg-warning/15 border border-warning' :
+                    className={`flex justify-between items-center p-2 sm:p-3 md:p-4 rounded-lg ${i === 0 ? 'bg-amber-300/10 dark:bg-warning/15 border border-amber-400 dark:border-warning' :
                       i === 1 ? 'bg-slate-300/15 dark:bg-slate-600/15 border border-slate-300 dark:border-slate-600' :
-                        i === 2 ? 'bg-amber-300/10 dark:bg-amber-700/10 border border-amber-400 dark:border-amber-700' :
+                        i === 2 ? 'bg-warning/15 dark:bg-amber-700/10 border border-warning dark:border-amber-700' :
                           'bg-muted/50'
                       }`}
                   >
@@ -400,9 +403,9 @@ const HostQuiz = () => {
                       <span className="ml-2 font-bold">{i + 1}</span>
                       <span className="font-semibold">{p.name}</span>
                     </div>
-                    <div className="flex items-center gap-8">
+                    <div className="flex items-center gap-2">
                       <span className="text-xl font-bold text-orange-300">{p.score}</span>
-                      <span className="mr-2 text-sm text-muted-foreground">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
+                      <span className="text-sm text-muted-foreground text-right w-12 sm:w-14 md:w-16">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
                     </div>
                   </div>
                 ))}
@@ -423,9 +426,9 @@ const HostQuiz = () => {
                 {participants?.map((p, i) => (
                   <div
                     key={p._id}
-                    className={`flex justify-between items-center p-2 rounded-lg ${i === 0 ? 'bg-warning/15 border border-warning' :
+                    className={`flex justify-between items-center p-2 rounded-lg ${i === 0 ? 'bg-amber-300/10 dark:bg-warning/15 border border-amber-400 dark:border-warning' :
                       i === 1 ? 'bg-slate-300/15 dark:bg-slate-600/15 border border-slate-300 dark:border-slate-600' :
-                        i === 2 ? 'bg-amber-300/10 dark:bg-amber-700/10 border border-amber-400 dark:border-amber-700' :
+                        i === 2 ? 'bg-warning/15 dark:bg-amber-700/10 border border-warning dark:border-amber-700' :
                           'bg-muted'
                       }`}
                   >
@@ -435,7 +438,7 @@ const HostQuiz = () => {
                     </div>
                     <div className="flex items-center gap-8">
                       <span className="text-xl font-bold text-orange-300">{p.score}</span>
-                      <span className="mr-2 text-sm text-muted-foreground">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
+                      <span className="text-sm text-muted-foreground text-right w-12 sm:w-14 md:w-16">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
                     </div>
                   </div>
                 ))}

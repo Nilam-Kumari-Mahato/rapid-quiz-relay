@@ -46,56 +46,66 @@ export default function Dashboard() {
               </Button>
             </div>
             <div className="px-4 md:px-8 lg:px-32 py-3 h-screen">
-              <div className="hidden lg:flex flex-row justify-between m-3 text-muted-foreground/70">
+              {/* Column Labels - Hidden on mobile */}
+              <div className="hidden md:flex justify-between px-3 mb-3 text-sm text-muted-foreground/70">
                 <p>Details</p>
                 <p>Created</p>
                 <p>More</p>
               </div>
 
-              <div className="flex flex-col gap-4 ">
+              <div className="flex flex-col gap-3 md:gap-4">
                 {(myQuizzes || []).map((q: any) => (
-                  <Card key={String(q._id)} className="p-4 flex flex-col justify-between">
+                  <Card key={String(q._id)} className="p-3 md:p-4">
+                    {/* Grid Layout - Mobile: 2 columns, Tablet+: 3 columns */}
+                    <div className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_1fr_1fr] gap-3 md:gap-4 items-center">
 
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h3 className="text-lg font-bold line-clamp-1 dark:text-zinc-200">{q.title}</h3>
-                        {q.description && <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{q.description.length > 10 ? `${q.description.substring(0, 10)}...` : q.description}</p>}
+                      {/* Details Column */}
+                      <div className="min-w-0">
+                        <h3 className="text-base md:text-lg font-bold truncate dark:text-zinc-200">{q.title}</h3>
+                        {q.description && (
+                          <p className="text-xs md:text-sm text-muted-foreground mt-1">
+                            {q.description.length > 12 ? `${q.description.substring(0, 12)}...` : q.description}
+                          </p>
+                        )}
                       </div>
 
-                      <div className="flex flex-row items-center text-muted-foreground">
-                        <Clock className="h-3 w-3 mr-1" />
-                        <span>{formatDistanceToNow(new Date(q._creationTime))} ago</span>
+                      {/* Created Column - Hidden on mobile */}
+                      <div className="hidden md:flex flex-row items-center justify-center text-sm text-muted-foreground min-w-0">
+                        <Clock className="h-3 w-3 mr-1 flex-shrink-0" />
+                        <span className="truncate">{formatDistanceToNow(new Date(q._creationTime))} ago</span>
                       </div>
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button className="p-2 rounded hover:bg-muted">
-                            <MoreVertical className="h-5 w-5" />
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                          <DropdownMenuItem onSelect={() => navigate(`/create-quiz?quizId=${String(q._id)}`)} className="dark:text-zinc-300">
-                            <Edit className=" dark:text-zinc-500 h-4 w-4" /> Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={() => navigate(`/quiz/${String(q._id)}`)} className="dark:text-zinc-300">
-                            <Play className="dark:text-zinc-500 h-4 w-4" /> Run
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onSelect={async () => {
-                            if (!confirm(`Delete quiz "${q.title}"? This cannot be undone.`)) return;
-                            try {
-                              await deleteQuiz({ id: q._id });
-                              toast({ title: "Deleted", description: "Quiz deleted." });
-                            } catch (err: any) {
-                              toast({ title: "Error", description: `Failed to delete quiz: ${err.message}`, variant: "destructive" });
-                            }
-                          }} className="dark:text-zinc-300">
-                            <Trash2 className="dark:text-zinc-500 h-4 w-4" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      {/* Actions Column */}
+                      <div className="flex justify-end">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-2 rounded hover:bg-muted">
+                              <MoreVertical className="h-5 w-5" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem onSelect={() => navigate(`/create-quiz?quizId=${String(q._id)}`)} className="dark:text-zinc-300">
+                              <Edit className="dark:text-zinc-500 h-4 w-4" /> Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={() => navigate(`/quiz/${String(q._id)}`)} className="dark:text-zinc-300">
+                              <Play className="dark:text-zinc-500 h-4 w-4" /> Run
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onSelect={async () => {
+                              if (!confirm(`Delete quiz "${q.title}"? This cannot be undone.`)) return;
+                              try {
+                                await deleteQuiz({ id: q._id });
+                                toast({ title: "Deleted", description: "Quiz deleted." });
+                              } catch (err: any) {
+                                toast({ title: "Error", description: `Failed to delete quiz: ${err.message}`, variant: "destructive" });
+                              }
+                            }} className="dark:text-zinc-300">
+                              <Trash2 className="dark:text-zinc-500 h-4 w-4" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
 
                     </div>
-
                   </Card>
                 ))}
               </div>

@@ -145,6 +145,7 @@ export const endQuiz = mutation({
     await ctx.db.patch(args.sessionId, {
       status: "finished",
       show_leaderboard: false,
+      ended_early: true,
       currentQuestionStartTime: undefined,
       currentQuestionEndTime: undefined,
     });
@@ -207,10 +208,6 @@ export const submitAnswer = mutation({
       question.time_limit + (GRACE_PERIOD_MS / 1000)
     );
 
-    // Calculate remaining time (higher is better - answered faster)
-    // This will be stored in time_taken field but semantically represents remaining time
-    const timeRemaining = Math.max(0, question.time_limit - validatedTimeTaken);
-
     // Insert answer and update score atomically
     await Promise.all([
       ctx.db.insert("answers", {
@@ -220,7 +217,7 @@ export const submitAnswer = mutation({
         answer,
         is_correct,
         score,
-        time_taken: timeRemaining,  // Now stores remaining time, not time taken
+        time_taken: validatedTimeTaken,  // Stores actual time taken to answer
       }),
       ctx.db.patch(participantId, {
         score: participant.score + score,

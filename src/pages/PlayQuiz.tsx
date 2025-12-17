@@ -40,6 +40,7 @@ const PlayQuiz = () => {
   const allParticipants = sessionData?.allParticipants;
   const currentQuestion = sessionData?.currentQuestion;
   const answerStats = sessionData?.answerStats;
+  const totalQuestions = sessionData?.totalQuestions;
 
   const hasAnswered = (sessionData as any)?.hasAnswered ?? false;
   const submittedAnswer = (sessionData as any)?.submittedAnswer ?? null;
@@ -231,7 +232,7 @@ const PlayQuiz = () => {
         {session.status === 'active' && !session.show_leaderboard && currentQuestion && (
           <Card className="p-4 bg-card border-border rounded-3xl animate-in fade-in slide-in-from-right-5 duration-500">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-base font-semibold text-muted-foreground">Question</h3>
+              <h3 className="text-base font-semibold text-muted-foreground">Question {session.current_question_index + 1} of {totalQuestions}</h3>
               <div className="flex items-center gap-2 text-secondary">
                 <Clock className="h-4 w-4" />
                 <span className="text-xl font-bold text-secondary">{timeLeft}s</span>
@@ -246,12 +247,12 @@ const PlayQuiz = () => {
                 '& [data-part="track"]': {
                   borderRadius: '9999px',
                   overflow: 'hidden',
-                  backgroundColor: 'rgba(0, 0, 0, 0.1)'
+                  backgroundColor: 'light-dark(rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1))'
                 },
                 '& [data-part="range"]': {
                   borderRadius: '9999px',
                   background: (() => {
-                    if (!currentQuestion) return 'white';
+                    if (!currentQuestion?.time_limit) return 'light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))';
 
                     // Calculate time thresholds as percentages
                     const timeLimit = currentQuestion.time_limit;
@@ -259,40 +260,42 @@ const PlayQuiz = () => {
                     const fiveSecPercent = (5 / timeLimit) * 100;
                     const fourPointSevenFiveSecPercent = (4.75 / timeLimit) * 100;
 
-                    // Three-stage color transition: white → butter yellow → orange
+                    // Three-stage color transition
+                    // Light mode: zinc-400 (lighter gray) → butter yellow → softer orange
+                    // Dark mode: white (70% opacity) → butter yellow → softer orange
                     if (progressPercent > tenSecPercent) {
-                      // Stage 1: Pure white
+                      // Stage 1: zinc-400 (light) or white 70% (dark)
                       return `linear-gradient(90deg, 
-                        rgb(255, 255, 255) 0%, 
-                        rgb(255, 255, 255) 50%,
-                        rgb(255, 255, 255) 100%)`;
+                        light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7)) 0%, 
+                        light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7)) 50%,
+                        light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7)) 100%)`;
                     } else if (progressPercent > fiveSecPercent) {
-                      // Stage 2: Blend from white to butter yellow (10s to 5s)
+                      // Stage 2: Blend to butter yellow (10s to 5s)
                       const yellowBlend = ((tenSecPercent - progressPercent) / (tenSecPercent - fiveSecPercent)) * 100;
                       return `linear-gradient(90deg, 
-                        color-mix(in srgb, rgb(255, 223, 128) ${yellowBlend}%, rgb(255, 255, 255)) 0%, 
-                        color-mix(in srgb, rgb(255, 215, 100) ${yellowBlend}%, rgb(255, 255, 255)) 50%,
-                        color-mix(in srgb, rgb(255, 207, 80) ${yellowBlend}%, rgb(255, 255, 255)) 100%)`;
+                        color-mix(in srgb, rgb(255, 223, 128) ${yellowBlend}%, light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))) 0%, 
+                        color-mix(in srgb, rgb(255, 215, 100) ${yellowBlend}%, light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))) 50%,
+                        color-mix(in srgb, rgb(255, 207, 80) ${yellowBlend}%, light-dark(rgba(161, 161, 170, 0.8), rgba(255, 255, 255, 0.7))) 100%)`;
                     } else if (progressPercent > fourPointSevenFiveSecPercent) {
-                      // Stage 3: Quick blend from butter yellow to orange (5s to 4.75s)
+                      // Stage 3: Quick blend from butter yellow to softer orange (5s to 4.75s)
                       const orangeBlend = ((fiveSecPercent - progressPercent) / (fiveSecPercent - fourPointSevenFiveSecPercent)) * 100;
                       return `linear-gradient(90deg, 
-                        color-mix(in srgb, rgb(251, 146, 60) ${orangeBlend}%, rgb(255, 223, 128)) 0%, 
-                        color-mix(in srgb, rgb(249, 115, 22) ${orangeBlend}%, rgb(255, 215, 100)) 50%,
-                        color-mix(in srgb, rgb(234, 88, 12) ${orangeBlend}%, rgb(255, 207, 80)) 100%)`;
+                        color-mix(in srgb, rgba(251, 146, 60, 0.85) ${orangeBlend}%, rgb(255, 223, 128)) 0%, 
+                        color-mix(in srgb, rgba(249, 115, 22, 0.85) ${orangeBlend}%, rgb(255, 215, 100)) 50%,
+                        color-mix(in srgb, rgba(234, 88, 12, 0.85) ${orangeBlend}%, rgb(255, 207, 80)) 100%)`;
                     } else {
-                      // Stage 4: Full orange (< 4.75s)
+                      // Stage 4: Softer orange (< 4.75s)
                       return `linear-gradient(90deg, 
-                        rgb(251, 146, 60) 0%, 
-                        rgb(249, 115, 22) 50%,
-                        rgb(234, 88, 12) 100%)`;
+                        rgba(251, 146, 60, 0.85) 0%, 
+                        rgba(249, 115, 22, 0.85) 50%,
+                        rgba(234, 88, 12, 0.85) 100%)`;
                     }
                   })(),
                   transition: 'width 0.1s linear',
                   willChange: 'width, background',
                   boxShadow: timeLeft <= 5
-                    ? `0 0 ${10 + (5 - timeLeft) * 2}px rgba(249, 115, 22, ${0.3 + (5 - timeLeft) * 0.05})`
-                    : '0 0 5px rgba(255, 255, 255, 0.2)'
+                    ? `0 0 ${10 + (5 - timeLeft) * 2}px rgba(249, 115, 22, ${0.2 + (5 - timeLeft) * 0.04})`
+                    : 'light-dark(0 0 5px rgba(161, 161, 170, 0.25), 0 0 5px rgba(255, 255, 255, 0.15))'
                 }
               }}
             >
@@ -401,9 +404,9 @@ const PlayQuiz = () => {
                   key={p._id}
                   className={`flex justify-between items-center p-2 rounded-lg ${p._id === participantId && i > 2 ? 'bg-gradient-to-r from-zinc-200/40 via-zinc-300/40 to-zinc-200/40 dark:from-zinc-700/40 dark:via-zinc-600/40 dark:to-zinc-700/40 border-4 border-zinc-400 dark:border-zinc-600' :
                     p._id === participantId ? 'bg-primary/20 border-2 border-primary' :
-                      i === 0 ? 'bg-warning/15 border border-warning' :
+                      i === 0 ? 'bg-amber-300/10 dark:bg-warning/15 border border-amber-400 dark:border-warning' :
                         i === 1 ? 'bg-slate-300/15 dark:bg-slate-600/15 border border-slate-300 dark:border-slate-600' :
-                          i === 2 ? 'bg-amber-300/10 dark:bg-amber-700/10 border border-amber-400 dark:border-amber-700' :
+                          i === 2 ? 'bg-warning/15 dark:bg-amber-700/10 border border-warning dark:border-amber-700' :
                             'bg-muted'
                     }`}
                 >
@@ -411,9 +414,9 @@ const PlayQuiz = () => {
                     <span className="ml-2 font-bold">{i + 1}</span>
                     <span className="font-semibold">{p.name}</span>
                   </div>
-                  <div className="flex items-center gap-7">
+                  <div className="flex items-center gap-2">
                     <span className="text-xl font-bold text-orange-300">{p.score}</span>
-                    <span className="mr-2 text-sm text-muted-foreground">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
+                    <span className="text-sm text-muted-foreground text-right w-12 sm:w-14 md:w-16">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
                   </div>
                 </div>
               ))}
@@ -424,7 +427,7 @@ const PlayQuiz = () => {
 
         {session.status === 'finished' && (
           <Card className="px-5 py-8 text-center animate-in fade-in zoom-in-95 duration-700">
-            {session.current_question_index < ((sessionData?.quiz as any)?.questions?.length || 999) - 1 ? (
+            {session.ended_early ? (
               // Quiz ended early by host
               <>
                 <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold mb-4 dark:text-zinc-300">
@@ -459,9 +462,9 @@ const PlayQuiz = () => {
                       key={p._id}
                       className={`flex justify-between items-center p-2 rounded-lg ${p._id === participantId && i > 2 ? 'bg-gradient-to-r from-zinc-200/40 via-zinc-300/40 to-zinc-200/40 dark:from-zinc-700/40 dark:via-zinc-600/40 dark:to-zinc-700/40 border-4 border-zinc-400 dark:border-zinc-600' :
                         p._id === participantId ? 'bg-primary/20 border-2 border-primary' :
-                          i === 0 ? 'bg-warning/15 border border-warning' :
+                          i === 0 ? 'bg-amber-300/10 dark:bg-warning/15 border border-amber-400 dark:border-warning' :
                             i === 1 ? 'bg-slate-300/15 dark:bg-slate-600/15 border border-slate-300 dark:border-slate-600' :
-                              i === 2 ? 'bg-amber-300/10 dark:bg-amber-700/10 border border-amber-400 dark:border-amber-700' :
+                              i === 2 ? 'bg-warning/15 dark:bg-amber-700/10 border border-warning dark:border-amber-700' :
                                 'bg-muted'
                         }`}
                     >
@@ -469,9 +472,9 @@ const PlayQuiz = () => {
                         <span className="ml-2 font-bold">{i + 1}</span>
                         <span className="font-semibold">{p.name}</span>
                       </div>
-                      <div className="flex items-center gap-7">
+                      <div className="flex items-center gap-2">
                         <span className="text-xl font-bold text-orange-300">{p.score}</span>
-                        <span className="mr-2 text-sm text-muted-foreground">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
+                        <span className="text-sm text-muted-foreground text-right w-12 sm:w-14 md:w-16">{(p as any).total_time ? `${(p as any).total_time.toFixed(1)}s` : '-'}</span>
                       </div>
                     </div>
                   ))}

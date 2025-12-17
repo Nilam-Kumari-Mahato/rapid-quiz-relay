@@ -48,6 +48,8 @@ export default defineSchema({
     show_leaderboard: v.boolean(),
     // Optional flag to indicate that the host has revealed the correct answer
     reveal_answer: v.optional(v.boolean()),
+    // Optional flag to indicate that the host ended the quiz early
+    ended_early: v.optional(v.boolean()),
 
     currentQuestionStartTime: v.optional(v.number()),
     currentQuestionEndTime: v.optional(v.number()),
